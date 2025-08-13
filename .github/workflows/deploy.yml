@@ -1,0 +1,36 @@
+name: Deploy to cse135.online (root)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 若是构建型项目（Vite/Next等），启用下面两行并把 rsync 源改为 ./dist/
+      # - run: npm ci
+      # - run: npm run build
+
+      - name: Install rsync and ssh client
+        run: sudo apt-get update && sudo apt-get install -y rsync openssh-client
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf "Host droplet\n  HostName ${{ secrets.HOST }}\n  User ${{ secrets.USER }}\n  Port ${{ secrets.PORT || '22' }}\n  IdentityFile ~/.ssh/id_ed25519\n  StrictHostKeyChecking no\n" >> ~/.ssh/config
+
+      - name: Rsync to /var/www/cse135.online (safe: no delete)
+        run: |
+          rsync -az \
+            --exclude ".git" \
+            --exclude ".github" \
+            ./ \
+            droplet:${{ secrets.REMOTE_PATH }}
+
+      - name: Reload Apache (optional)
+        run: ssh droplet "sudo systemctl reload apache2 || true"
