@@ -4,11 +4,11 @@ Login information:
 
 
 username:grader
-password:
+password:8888
 
 username:nicole
-password:
+password:8888
 
 username:yanhua
-password:
+password:8888
 
