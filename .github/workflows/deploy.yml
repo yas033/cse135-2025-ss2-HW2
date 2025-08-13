@@ -1,26 +1,38 @@
-name: Deploy to cse135.online (root)
+name: "Deploy to cse135.online (root)"
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches:
+      - main
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: "Checkout"
+        uses: actions/checkout@v4
 
-      - name: Install rsync and ssh client
-        run: sudo apt-get update && sudo apt-get install -y rsync openssh-client
+      - name: "Install rsync and ssh client"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync openssh-client
 
-      - name: Setup SSH
+      - name: "Setup SSH"
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          printf "Host droplet\n  HostName ${{ secrets.HOST }}\n  User ${{ secrets.USER }}\n  Port ${{ secrets.PORT || '22' }}\n  IdentityFile ~/.ssh/id_ed25519\n  StrictHostKeyChecking no\n" >> ~/.ssh/config
+          {
+            echo "Host droplet"
+            echo "  HostName ${{ secrets.HOST }}"
+            echo "  User ${{ secrets.USER }}"
+            echo "  Port ${{ secrets.PORT || '22' }}"
+            echo "  IdentityFile ~/.ssh/id_ed25519"
+            echo "  StrictHostKeyChecking no"
+          } >> ~/.ssh/config
 
-      - name: Rsync to /var/www/cse135.online (safe: no delete)
+      - name: "Rsync to /var/www/cse135.online (no delete)"
         run: |
           rsync -az \
             --exclude ".git" \
@@ -28,5 +40,5 @@ jobs:
             ./ \
             droplet:${{ secrets.REMOTE_PATH }}
 
-      - name: Reload Apache (optional)
+      - name: "Reload Apache"
         run: ssh droplet "sudo systemctl reload apache2 || true"
