@@ -32,3 +32,7 @@ HTML reduced in transfer size, confirming that compression is active.
 After enable the compression, the HTML file sent from the server became much smaller in size when transferred, but the actual page content stayed the same. The browser still showed the full HTML after it was uncompressed. This made the page load faster and used less data.
 
 
+## Step 6: Obscure server identity
+
+Hiding server- information or server version can help prevent attackers from accessing your server. This improves security, as clear version information gives hackers a better understanding of where to begin looking for vulnerabilities. I spent a long time working on this part, and while I didn't manage to create a server: CSE135 Server, I removed the specific Apache version information to minimize risk within my capabilities.
+
