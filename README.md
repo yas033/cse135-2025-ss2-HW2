@@ -25,8 +25,10 @@ Enabled mod_deflate in Apache to compress HTML, CSS, and JS
 
 Verified using Chrome DevTools:
 
-`content-encoding: gzip` present in Response Headers
+content-encoding: gzip present in Response Headers
 
 HTML reduced in transfer size, confirming that compression is active.
+
+After enable the compression, the HTML file sent from the server became much smaller in size when transferred, but the actual page content stayed the same. The browser still showed the full HTML after it was uncompressed. This made the page load faster and used less data.
 
 
