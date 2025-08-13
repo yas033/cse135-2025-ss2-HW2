@@ -10,10 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 若是构建型项目（Vite/Next等），启用下面两行并把 rsync 源改为 ./dist/
-      # - run: npm ci
-      # - run: npm run build
-
       - name: Install rsync and ssh client
         run: sudo apt-get update && sudo apt-get install -y rsync openssh-client
 
