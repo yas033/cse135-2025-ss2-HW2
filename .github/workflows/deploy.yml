@@ -45,3 +45,4 @@ jobs:
 
       - name: "Reload Apache"
         run: ssh droplet "sudo systemctl reload apache2 || true"
+        
