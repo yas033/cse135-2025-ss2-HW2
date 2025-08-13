@@ -13,8 +13,6 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v4
 
-      
-
       - name: "Install rsync and ssh client"
         run: |
           sudo apt-get update
